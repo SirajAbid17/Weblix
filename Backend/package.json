@@ -1,0 +1,35 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Weblix AI is an intelligent platform that transforms user prompts into fully functional, deployable websites using modern web technologies.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Siraj_Abid",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^2.3.0",
+    "@google/generative-ai": "^0.24.1",
+    "@mistralai/mistralai": "^2.2.1",
+    "axios": "^1.16.0",
+    "bcryptjs": "^3.0.3",
+    "cheerio": "^1.2.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "form-data": "^4.0.5",
+    "groq-sdk": "^1.1.2",
+    "inquirer": "^13.4.3",
+    "jsonwebtoken": "^9.0.3",
+    "jszip": "^3.10.1",
+    "mongoose": "^9.6.1",
+    "nodemon": "^3.1.14",
+    "open": "^11.0.0",
+    "openai": "^6.37.0",
+    "stripe": "^22.1.0"
+  }
+}
