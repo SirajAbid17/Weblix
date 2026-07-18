@@ -19,7 +19,7 @@ export const Auth = async (req, res) => {
     if (!user) {
       user = await User.create({
         name: name || email.split('@')[0],
-        email,
+        email,   
         avatar: avatar || null,
         credits: 100,
       });

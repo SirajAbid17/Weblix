@@ -373,23 +373,7 @@ export default function GetAllWebsite({
           </div>
 
           <div className="flex gap-3">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className={`px-4 py-2.5 rounded-lg cursor-pointer flex items-center gap-2 ${isDarkMode ? "bg-gray-800 hover:bg-gray-700 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-900"}`}
-            >
-              {refreshing ? (
-                <BeatLoader
-                  color={isDarkMode ? "#ffffff" : "#000000"}
-                  size={8}
-                />
-              ) : (
-                "Refresh"
-              )}
-            </motion.button>
-
+           
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

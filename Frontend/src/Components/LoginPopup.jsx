@@ -26,7 +26,8 @@ export default function LoginPopup({ open, onClose }) {
        
        
        const result = await signInWithPopup(auth, provider);
-       console.log("Google sign in success:", result.user.displayName);
+       console.log("Google sign in success:", result.user);
+       
        
        
        const res = await axios.post(`${ServerUrl}/api/auth/google`, {

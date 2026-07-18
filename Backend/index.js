@@ -12,7 +12,7 @@ import UserRouter from "./routes/user.js";
 import WebsiteRoute from "./routes/website.js";
 import DeployRoute from "./routes/Deploy.js";
 import Billingrouter from "./routes/billingRoutes.js";
-import groqrouter from "./routes/groq.js";
+
 
 dotenv.config();
 
@@ -38,7 +38,7 @@ app.use("/api/user", UserRouter);
 app.use("/api/website", WebsiteRoute);
 app.use("/api/websitedeploy", DeployRoute);
 app.use("/api/billing", Billingrouter);
-app.use("/api/groq", groqrouter);
+
 
 
 app.get("/api/health", (req, res) => {
@@ -52,11 +52,11 @@ const startServer = async () => {
   try {
     await dbConnect();
     app.listen(PORT, () => {
-      console.log(`✅ Server running on http://localhost:${PORT}`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (error) {
-    console.log("❌ DB Connection Failed:", error);
+    console.log("DB Connection Failed:", error);
     process.exit(1);
   }
 };

@@ -36,7 +36,6 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-
   const fetchDashboardStats = async () => {
     try {
       setError(null);
@@ -66,12 +65,12 @@ export default function Dashboard() {
       console.error("Error fetching dashboard stats:", error);
       setError(error.response?.data?.message || error.message || "Failed to load dashboard stats");
       
-    
+      // Fallback data - removed website names, using generic categories
       setPieData([
-        { name: "Portfolio", value: 35, color: "#3B82F6" },
-        { name: "E-commerce", value: 25, color: "#10B981" },
-        { name: "Blog", value: 20, color: "#F59E0B" },
-        { name: "Other", value: 20, color: "#8B5CF6" },
+        { name: "Category A", value: 35, color: "#3B82F6" },
+        { name: "Category B", value: 25, color: "#10B981" },
+        { name: "Category C", value: 20, color: "#F59E0B" },
+        { name: "Category D", value: 20, color: "#8B5CF6" },
       ]);
     }
   };
@@ -90,6 +89,7 @@ export default function Dashboard() {
     navigate("/generate");
   };
 
+  // Updated stat cards - REMOVED Total Visits
   const statCards = [
     {
       title: "Total Websites",
@@ -103,12 +103,7 @@ export default function Dashboard() {
       icon: <FiTrendingUp size={24} />,
       color: "text-green-500",
     },
-    {
-      title: "Total Visits",
-      value: stats.totalVisits,
-      icon: <FiBarChart2 size={24} />,
-      color: "text-purple-500",
-    },
+    // REMOVED: Total Visits card
     {
       title: "Performance Score",
       value: `${stats.performanceScore}%`,
@@ -116,6 +111,19 @@ export default function Dashboard() {
       color: "text-yellow-500",
     },
   ];
+
+  // Custom tooltip for pie chart - shows data without website names
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className={`p-3 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
+          <p className="font-semibold text-sm">{payload[0].name}</p>
+          <p className="text-sm text-gray-500">{payload[0].value}% of total</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div
@@ -199,21 +207,23 @@ export default function Dashboard() {
               </motion.div>
             </motion.div>
 
-            
+            {/* Stats Cards - Now only 3 cards (Total Visits removed) */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
             >
               {statCards.map((card, idx) => (
-                <div
+                <motion.div
                   key={idx}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
                   className={`rounded-xl p-6 ${
                     isDarkMode
-                      ? "bg-[#1a1a1a] border border-gray-800"
-                      : "bg-white border border-gray-200 shadow-sm"
-                  }`}
+                      ? "bg-[#1a1a1a] border border-gray-800 hover:border-gray-700"
+                      : "bg-white border border-gray-200 shadow-sm hover:shadow-md"
+                  } transition-all duration-200`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className={`text-2xl ${card.color}`}>
@@ -226,7 +236,7 @@ export default function Dashboard() {
                   <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                     {card.title}
                   </p>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
 
@@ -242,7 +252,7 @@ export default function Dashboard() {
               </div>
             )}
 
-           
+            {/* Analytics Section */}
             <AnimatePresence>
               {showStats && pieData.length > 0 && (
                 <motion.div
@@ -252,7 +262,7 @@ export default function Dashboard() {
                   transition={{ delay: 0.4 }}
                   className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8"
                 >
-                
+                  {/* Chart Section - No website names visible */}
                   <div
                     className={`rounded-xl p-6 ${
                       isDarkMode
@@ -267,41 +277,45 @@ export default function Dashboard() {
                           Website Distribution
                         </h3>
                         <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-                          Types of websites you've created
+                          Overview of your website categories
                         </p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <ResponsiveContainer width="100%" height={200}>
+                    
+                    <div className="flex flex-col items-center">
+                      {/* Chart with NO labels - completely clean */}
+                      <ResponsiveContainer width="100%" height={280}>
                         <PieChart>
                           <Pie
                             data={pieData}
                             cx="50%"
-                            cy="50%"
+                            cy="45%"
                             innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={5}
+                            outerRadius={90}
+                            paddingAngle={3}
                             dataKey="value"
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            // NO labels on the chart
+                            label={false}
+                            labelLine={false}
                           >
                             {pieData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
-                          <Tooltip />
+                          <Tooltip content={<CustomTooltip />} />
                         </PieChart>
                       </ResponsiveContainer>
-                      <div className="flex flex-col justify-center gap-3">
+                      
+                      {/* Clean percentage display - shows only percentages, no website names */}
+                      <div className="flex flex-wrap justify-center gap-3 mt-2">
                         {pieData.map((item, idx) => (
-                          <div key={idx} className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <div
-                                className="w-3 h-3 rounded-full"
-                                style={{ backgroundColor: item.color }}
-                              />
-                              <span className="text-sm">{item.name}</span>
-                            </div>
-                            <span className="text-sm font-semibold">
+                          <div key={idx} className="flex items-center gap-2 px-3 py-1.5 rounded-lg" 
+                            style={{ backgroundColor: `${item.color}20` }}>
+                            <div
+                              className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <span className="text-xs font-semibold">
                               {item.value}%
                             </span>
                           </div>
@@ -310,7 +324,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                
+                  {/* Recent Activity */}
                   <div
                     className={`rounded-xl p-6 ${
                       isDarkMode
@@ -322,8 +336,11 @@ export default function Dashboard() {
                     {recentActivity.length > 0 ? (
                       <div className="space-y-3">
                         {recentActivity.slice(0, 5).map((activity, idx) => (
-                          <div
+                          <motion.div
                             key={idx}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.1 }}
                             className={`flex items-center justify-between py-2 border-b last:border-0 ${
                               isDarkMode ? "border-gray-700" : "border-gray-200"
                             }`}
@@ -331,20 +348,24 @@ export default function Dashboard() {
                             <div>
                               <p className="text-sm font-medium">{activity.title}</p>
                               <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
-                                {activity.type === "deployed" ? "Deployed" : "Created"} •{" "}
-                                {new Date(activity.date).toLocaleDateString()}
+                                {activity.type === "deployed" ? "🚀 Deployed" : "✨ Created"} •{" "}
+                                {new Date(activity.date).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric"
+                                })}
                               </p>
                             </div>
                             <span
-                              className={`text-xs px-2 py-1 rounded-full ${
+                              className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                                 activity.status === "Live"
-                                  ? "bg-green-500/20 text-green-500"
-                                  : "bg-yellow-500/20 text-yellow-500"
+                                  ? "bg-green-500/20 text-green-500 border border-green-500/30"
+                                  : "bg-yellow-500/20 text-yellow-500 border border-yellow-500/30"
                               }`}
                             >
                               {activity.status}
                             </span>
-                          </div>
+                          </motion.div>
                         ))}
                       </div>
                     ) : (

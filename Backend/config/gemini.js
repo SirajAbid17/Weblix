@@ -12,7 +12,7 @@ export const generateWithGemini = async (prompt, retries = 3) => {
   
   for (let i = 0; i < retries; i++) {
     try {
-      console.log(`🔄 Gemini attempt ${i + 1}...`);
+      console.log(`Gemini attempt ${i + 1}...`);
       
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
@@ -129,7 +129,7 @@ Create a modern ${type} website with:
 
 export const generateWebsiteWithGemini = async (prompt) => {
   const type = detectWebsiteType(prompt);
-  console.log(`📊 Detected type: ${type} for prompt: "${prompt}"`);
+  console.log(`Detected type: ${type} for prompt: "${prompt}"`);
   
   const specificInstructions = getSpecificInstructions(prompt, type);
   

@@ -5,7 +5,7 @@ export const Deploy = async (req, res) => {
     try {
         const { id } = req.params;
         
-        console.log("📦 Deploy request received for ID:", id);
+        console.log("Deploy request received for ID:", id);
         console.log("User ID:", req.user?._id);
         
         
