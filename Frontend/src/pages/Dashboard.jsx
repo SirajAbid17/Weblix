@@ -26,9 +26,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState({
     totalWebsites: 0,
     activeDeployments: 0,
-    totalVisits: 0,
-    averageLoadTime: 0,
-    performanceScore: 0,
+    // REMOVED: totalVisits, averageLoadTime, performanceScore
   });
   const [pieData, setPieData] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
@@ -65,7 +63,6 @@ export default function Dashboard() {
       console.error("Error fetching dashboard stats:", error);
       setError(error.response?.data?.message || error.message || "Failed to load dashboard stats");
       
-      // Fallback data - removed website names, using generic categories
       setPieData([
         { name: "Category A", value: 35, color: "#3B82F6" },
         { name: "Category B", value: 25, color: "#10B981" },
@@ -89,7 +86,7 @@ export default function Dashboard() {
     navigate("/generate");
   };
 
-  // Updated stat cards - REMOVED Total Visits
+  // Updated stat cards - ONLY 2 CARDS NOW
   const statCards = [
     {
       title: "Total Websites",
@@ -103,16 +100,8 @@ export default function Dashboard() {
       icon: <FiTrendingUp size={24} />,
       color: "text-green-500",
     },
-    // REMOVED: Total Visits card
-    {
-      title: "Performance Score",
-      value: `${stats.performanceScore}%`,
-      icon: <FiClock size={24} />,
-      color: "text-yellow-500",
-    },
   ];
 
-  // Custom tooltip for pie chart - shows data without website names
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
@@ -167,7 +156,7 @@ export default function Dashboard() {
                 }`}
               >
                 Manage and monitor all your websites from one place. Track
-                performance, analyze traffic, and grow your online presence.
+                performance and grow your online presence.
               </motion.p>
 
               <motion.div
@@ -207,12 +196,12 @@ export default function Dashboard() {
               </motion.div>
             </motion.div>
 
-            {/* Stats Cards - Now only 3 cards (Total Visits removed) */}
+            {/* Stats Cards - Now only 2 cards */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"
             >
               {statCards.map((card, idx) => (
                 <motion.div
@@ -262,7 +251,7 @@ export default function Dashboard() {
                   transition={{ delay: 0.4 }}
                   className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8"
                 >
-                  {/* Chart Section - No website names visible */}
+                  {/* Chart Section */}
                   <div
                     className={`rounded-xl p-6 ${
                       isDarkMode
@@ -283,7 +272,6 @@ export default function Dashboard() {
                     </div>
                     
                     <div className="flex flex-col items-center">
-                      {/* Chart with NO labels - completely clean */}
                       <ResponsiveContainer width="100%" height={280}>
                         <PieChart>
                           <Pie
@@ -294,7 +282,6 @@ export default function Dashboard() {
                             outerRadius={90}
                             paddingAngle={3}
                             dataKey="value"
-                            // NO labels on the chart
                             label={false}
                             labelLine={false}
                           >
@@ -306,7 +293,6 @@ export default function Dashboard() {
                         </PieChart>
                       </ResponsiveContainer>
                       
-                      {/* Clean percentage display - shows only percentages, no website names */}
                       <div className="flex flex-wrap justify-center gap-3 mt-2">
                         {pieData.map((item, idx) => (
                           <div key={idx} className="flex items-center gap-2 px-3 py-1.5 rounded-lg" 

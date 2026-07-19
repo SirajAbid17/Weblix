@@ -56,36 +56,8 @@ export const GetDashboardStats = async (req, res) => {
     const websites = await Website.find({ user: userId });
     const totalWebsites = websites.length;
     const activeDeployments = websites.filter((w) => w.deploy === true).length;
-    const totalVisits = websites.reduce(
-      (sum, website) => sum + (website.analytics?.visits || 0),
-      0,
-    );
 
-    const websitesWithLoadTime = websites.filter(
-      (w) => w.analytics?.loadTime > 0,
-    );
-    const averageLoadTime =
-      websitesWithLoadTime.length > 0
-        ? (
-            websitesWithLoadTime.reduce(
-              (sum, w) => sum + (w.analytics?.loadTime || 0),
-              0,
-            ) / websitesWithLoadTime.length
-          ).toFixed(1)
-        : 1.2;
-
-    const websitesWithScore = websites.filter(
-      (w) => w.analytics?.performanceScore > 0,
-    );
-    const performanceScore =
-      websitesWithScore.length > 0
-        ? Math.round(
-            websitesWithScore.reduce(
-              (sum, w) => sum + (w.analytics?.performanceScore || 0),
-              0,
-            ) / websitesWithScore.length,
-          )
-        : 94;
+    // REMOVED: totalVisits, loadTime, performanceScore calculations
 
     const typeDistribution = {
       Portfolio: 0,
@@ -137,9 +109,7 @@ export const GetDashboardStats = async (req, res) => {
       stats: {
         totalWebsites,
         activeDeployments,
-        totalVisits,
-        averageLoadTime: parseFloat(averageLoadTime),
-        performanceScore,
+        // REMOVED: totalVisits, averageLoadTime, performanceScore
       },
       charts: {
         websiteDistribution: pieChartData,
@@ -156,42 +126,7 @@ export const GetDashboardStats = async (req, res) => {
   }
 };
 
-export const TrackWebsiteVisit = async (req, res) => {
-  try {
-    const { slug } = req.params;
-
-    const website = await Website.findOne({ slug, deploy: true });
-
-    if (!website) {
-      return res.status(404).json({ message: "Website not found" });
-    }
-
-    if (!website.analytics) {
-      website.analytics = {};
-    }
-
-    website.analytics.visits = (website.analytics.visits || 0) + 1;
-    website.analytics.lastVisitedAt = new Date();
-
-    website.analytics.loadTime = parseFloat(
-      (Math.random() * 2 + 0.5).toFixed(1),
-    );
-    website.analytics.performanceScore = Math.floor(Math.random() * 30) + 70;
-
-    await website.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Visit tracked successfully",
-    });
-  } catch (error) {
-    console.error("Track visit error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to track visit",
-    });
-  }
-};
+// REMOVED: TrackWebsiteVisit function (no longer needed)
 
 export const GetWebsiteAnalytics = async (req, res) => {
   try {
@@ -207,10 +142,7 @@ export const GetWebsiteAnalytics = async (req, res) => {
     return res.status(200).json({
       success: true,
       analytics: {
-        visits: website.analytics?.visits || 0,
-        lastVisitedAt: website.analytics?.lastVisitedAt,
-        loadTime: website.analytics?.loadTime || 0,
-        performanceScore: website.analytics?.performanceScore || 0,
+        // REMOVED: visits, loadTime, performanceScore
         createdAt: website.createdAt,
         lastModified: website.updatedAt,
         isDeployed: website.deploy,

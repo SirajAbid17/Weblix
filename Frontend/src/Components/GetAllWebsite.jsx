@@ -30,7 +30,6 @@ export default function GetAllWebsite({
   const [error, setError] = useState("");
   const [deployingId, setDeployingId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const [internalDarkMode, setInternalDarkMode] = useState(true);
@@ -242,38 +241,7 @@ export default function GetAllWebsite({
     }
   };
 
-  const handleDeleteWebsite = async (id) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete this website? This action cannot be undone.",
-      )
-    ) {
-      return;
-    }
-
-    try {
-      setDeleteLoading(id);
-      await axios.delete(`${ServerUrl}/api/website/${id}`, {
-        withCredentials: true,
-      });
-
-      setWebsites((prevWebsites) =>
-        prevWebsites.filter((website) => website._id !== id),
-      );
-      toast.success(" Website deleted successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    } catch (error) {
-      console.error("Error deleting website:", error);
-      toast.error(error.response?.data?.message || "Failed to delete website", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-    } finally {
-      setDeleteLoading(null);
-    }
-  };
+  // REMOVED: handleDeleteWebsite function completely
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -373,7 +341,6 @@ export default function GetAllWebsite({
           </div>
 
           <div className="flex gap-3">
-           
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -542,22 +509,6 @@ export default function GetAllWebsite({
                           <FaRocket size={12} />
                         </motion.button>
                       )}
-
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleDeleteWebsite(website._id)}
-                        disabled={deleteLoading === website._id}
-                        className="flex-1 py-2 rounded-md cursor-pointer flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all bg-red-600 hover:bg-red-700 text-white"
-                      >
-                        {deleteLoading === website._id ? (
-                          <BeatLoader color="#ffffff" size={8} />
-                        ) : (
-                          <>
-                            <FaTrash size={12} /> Delete
-                          </>
-                        )}
-                      </motion.button>
                     </div>
 
                     {website.deploy && website.deployedUrl && (

@@ -45,7 +45,7 @@ export const Deploy = async (req, res) => {
         const baseUrl = process.env.CLIENT_URL || "http://localhost:5173";
         const deployedUrl = `${baseUrl}/site/${website.slug}`;
         
-        // Update website
+        
         website.deploy = true;
         website.deployedUrl = deployedUrl;
         website.deployedAt = new Date();
@@ -53,7 +53,7 @@ export const Deploy = async (req, res) => {
         
         await website.save();
         
-        console.log("✅ Website deployed successfully!");
+        console.log("Website deployed successfully!");
         console.log("URL:", deployedUrl);
         
         return res.status(200).json({
@@ -66,7 +66,7 @@ export const Deploy = async (req, res) => {
         });
         
     } catch (error) {
-        console.error("❌ Deploy error:", error);
+        console.error("Deploy error:", error);
         return res.status(500).json({
             success: false,
             message: "Failed to deploy website",
@@ -80,7 +80,7 @@ export const GetDeployedWebsite = async (req, res) => {
     try {
         const { slug } = req.params;
         
-        console.log("🌐 Fetching deployed website for slug:", slug);
+        console.log("Fetching deployed website for slug:", slug);
         
         const website = await Website.findOne({
             slug: slug,

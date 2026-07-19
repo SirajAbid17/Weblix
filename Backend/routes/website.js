@@ -12,14 +12,13 @@ import {
 import { 
   GetDashboardStats, 
   GetWebsiteAnalytics, 
-  TrackWebsiteVisit,
   UpdateWebsiteType 
 } from "../controllers/Graph.js";
 
 const WebsiteRoute = express.Router();
 
+// REMOVED: track route - no longer needed
 WebsiteRoute.get('/public/:slug', GetWebsiteBySlug);
-WebsiteRoute.get('/track/:slug', TrackWebsiteVisit);
 
 WebsiteRoute.get('/dashboard/stats', Auth, GetDashboardStats);
 WebsiteRoute.get('/dashboard/analytics/:id', Auth, GetWebsiteAnalytics);
@@ -28,9 +27,7 @@ WebsiteRoute.get('/all', Auth, GetAll);
 WebsiteRoute.get('/getwebsite/:id', Auth, FindWebsiteById);
 WebsiteRoute.get('/:id', Auth, FindWebsiteById);
 
-
 WebsiteRoute.post('/update/:id', Auth, UpdateChangingWebsite);  
-
 WebsiteRoute.put('/save/:id', Auth, SaveWebsiteChanges);
 WebsiteRoute.post('/deploy/:id', Auth, SaveDeployment);
 WebsiteRoute.put('/type/:id', Auth, UpdateWebsiteType);
