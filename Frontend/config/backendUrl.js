@@ -1,1 +1,3 @@
-export const ServerUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+export const ServerUrl = import.meta.env.DEV
+  ? "http://localhost:3000"
+  : "";
