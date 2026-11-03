@@ -31,6 +31,18 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Body scroll lock jab mobile menu open ho
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   const Logout = async () => {
     try {
       await axios.get(`${ServerUrl}/api/auth/logout`, {
@@ -45,7 +57,6 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
     }
   };
 
-  // 👇 KEY FIX: navigation ke baad menu band karo, pehle nahi
   const closeMenuAfterNav = () => {
     setTimeout(() => setMenuOpen(false), 150);
   };
@@ -67,7 +78,7 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
             <Link
               to="/"
               onClick={closeMenuAfterNav}
-              className={`text-2xl font-extrabold bg-linear-to-r bg-clip-text text-transparent ${
+              className={`text-2xl font-extrabold bg-linear-to-r bg-clip-text text-transparent flex-shrink-0 ${
                 isDarkMode ? "from-white to-gray-400" : "from-gray-800 to-black"
               }`}
             >
@@ -75,10 +86,10 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
             </Link>
 
             {/* DESKTOP NAV */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-4 lg:gap-6">
               <Link
                 to="/pricing"
-                className={`text-sm ${
+                className={`text-sm whitespace-nowrap ${
                   isDarkMode
                     ? "text-gray-300 hover:text-white"
                     : "text-gray-600 hover:text-black"
@@ -90,7 +101,7 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
               {!userData ? (
                 <button
                   onClick={onLoginClick}
-                  className={`flex items-center gap-2 px-5 py-2 rounded-xl border text-sm ${
+                  className={`flex items-center gap-2 px-5 py-2 rounded-xl border text-sm whitespace-nowrap ${
                     isDarkMode
                       ? "bg-black border-zinc-700 text-white"
                       : "bg-white border-gray-300 text-black"
@@ -100,40 +111,49 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
                   Login
                 </button>
               ) : (
-                <div className="relative" ref={profileRef}>
+                /* ✅ PROFILE — proper right alignment ke liye flex-shrink-0 */
+                <div className="relative flex-shrink-0" ref={profileRef}>
                   <div
                     onClick={() => setProfileOpen((v) => !v)}
-                    className={`flex items-center gap-3 px-3 py-1.5 rounded-full cursor-pointer ${
+                    className={`flex items-center gap-3 px-3 py-1.5 rounded-full cursor-pointer transition-all ${
                       isDarkMode
-                        ? "bg-white/5 border border-white/10"
-                        : "bg-black/5 border border-black/10"
+                        ? "bg-white/5 border border-white/10 hover:bg-white/10"
+                        : "bg-black/5 border border-black/10 hover:bg-black/10"
                     }`}
                   >
                     {userData.avatar && !avatarError ? (
                       <img
                         src={userData.avatar}
                         alt="avatar"
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                         onError={() => setAvatarError(true)}
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                         {userData.name?.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <span className="text-sm">{userData.name}</span>
+                    <span className="text-sm max-w-[100px] truncate hidden lg:inline">
+                      {userData.name}
+                    </span>
                   </div>
 
+                  {/* ✅ DROPDOWN — right-aligned, viewport-safe */}
                   {profileOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`absolute top-full right-0 mt-1 w-72 rounded-xl overflow-hidden shadow-xl z-50 border ${
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ duration: 0.15 }}
+                      className={`absolute top-full right-0 mt-2 rounded-xl overflow-hidden shadow-2xl z-[70] border ${
                         isDarkMode
-                          ? "bg-black/95 border-white/10"
-                          : "bg-white/95 border-black/10"
+                          ? "bg-[#0a0a0a] border-white/10"
+                          : "bg-white border-black/10"
                       }`}
+                      style={{
+                        width: "min(18rem, calc(100vw - 2rem))",
+                      }}
                     >
+                      {/* User info header */}
                       <div
                         className={`px-4 py-4 border-b flex items-center gap-3 ${
                           isDarkMode
@@ -145,11 +165,11 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
                           <img
                             src={userData.avatar}
                             alt={userData.name}
-                            className="w-10 h-10 rounded-full object-cover"
+                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                             onError={() => setAvatarError2(true)}
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-base font-bold">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-base font-bold flex-shrink-0">
                             {userData?.name?.charAt(0).toUpperCase()}
                           </div>
                         )}
@@ -167,25 +187,29 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
                         </div>
                       </div>
 
+                      {/* Credits */}
                       <div
-                        className={`px-4 py-3 flex justify-between border-b ${
+                        className={`px-4 py-3 flex justify-between items-center border-b ${
                           isDarkMode ? "border-white/10" : "border-black/10"
                         }`}
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 text-sm">
                           <BsCoin className="text-yellow-400" />
                           Credits
                         </div>
-                        <span className="text-yellow-400 font-bold">
+                        <span className="text-yellow-400 font-bold text-sm">
                           {userData.credits}
                         </span>
                       </div>
 
+                      {/* Menu items */}
                       <Link
                         to="/dashboard"
                         onClick={() => setProfileOpen(false)}
-                        className={`block w-full px-4 py-3 ${
-                          isDarkMode ? "hover:bg-white/10" : "hover:bg-black/5"
+                        className={`block w-full px-4 py-3 text-sm transition-colors ${
+                          isDarkMode
+                            ? "hover:bg-white/10 text-gray-200"
+                            : "hover:bg-black/5 text-gray-800"
                         }`}
                       >
                         Dashboard
@@ -193,8 +217,10 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
                       <Link
                         to="/contact"
                         onClick={() => setProfileOpen(false)}
-                        className={`block w-full px-4 py-3 ${
-                          isDarkMode ? "hover:bg-white/10" : "hover:bg-black/5"
+                        className={`block w-full px-4 py-3 text-sm transition-colors ${
+                          isDarkMode
+                            ? "hover:bg-white/10 text-gray-200"
+                            : "hover:bg-black/5 text-gray-800"
                         }`}
                       >
                         Contact Us
@@ -202,20 +228,28 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
                       <Link
                         to="/about"
                         onClick={() => setProfileOpen(false)}
-                        className={`block w-full px-4 py-3 ${
-                          isDarkMode ? "hover:bg-white/10" : "hover:bg-black/5"
+                        className={`block w-full px-4 py-3 text-sm transition-colors ${
+                          isDarkMode
+                            ? "hover:bg-white/10 text-gray-200"
+                            : "hover:bg-black/5 text-gray-800"
                         }`}
                       >
                         About
                       </Link>
+
                       <div
                         className={`border-t ${
                           isDarkMode ? "border-white/10" : "border-black/10"
                         }`}
                       />
+
                       <button
                         onClick={Logout}
-                        className="w-full px-4 py-3 text-red-400 hover:bg-red-500/20 text-left"
+                        className={`w-full px-4 py-3 text-sm text-left text-red-400 transition-colors ${
+                          isDarkMode
+                            ? "hover:bg-red-500/10"
+                            : "hover:bg-red-500/10"
+                        }`}
                       >
                         Logout
                       </button>
@@ -231,7 +265,27 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
             </div>
 
             {/* MOBILE HAMBURGER */}
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center gap-2">
+              {userData && (
+                <button
+                  onClick={() => setProfileOpen((v) => !v)}
+                  className="relative flex items-center"
+                  aria-label="Profile"
+                >
+                  {userData.avatar && !avatarError3 ? (
+                    <img
+                      src={userData.avatar}
+                      alt="avatar"
+                      className="w-8 h-8 rounded-full object-cover"
+                      onError={() => setAvatarError3(true)}
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">
+                      {userData.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </button>
+              )}
               <button
                 onClick={() => setMenuOpen((v) => !v)}
                 className={isDarkMode ? "text-white" : "text-black"}
@@ -244,14 +298,132 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
         </div>
       </motion.nav>
 
-      {/* ✅ MOBILE MENU — OUTSIDE motion.nav, alag stacking context */}
+      {/* ✅ MOBILE PROFILE DROPDOWN — fixed right-aligned, viewport-safe */}
+      {userData && profileOpen && (
+        <div
+          className="md:hidden fixed top-16 right-3 left-3 z-[80]"
+          ref={profileRef}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.15 }}
+            className={`ml-auto rounded-xl overflow-hidden shadow-2xl border ${
+              isDarkMode
+                ? "bg-[#0a0a0a] border-white/10"
+                : "bg-white border-black/10"
+            }`}
+            style={{ width: "min(18rem, calc(100vw - 1.5rem))" }}
+          >
+            {/* User info */}
+            <div
+              className={`px-4 py-4 border-b flex items-center gap-3 ${
+                isDarkMode
+                  ? "border-white/10 bg-white/5"
+                  : "border-black/10 bg-black/5"
+              }`}
+            >
+              {userData?.avatar && !avatarError3 ? (
+                <img
+                  src={userData.avatar}
+                  alt="avatar"
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                  onError={() => setAvatarError3(true)}
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-base font-bold flex-shrink-0">
+                  {userData?.name?.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold truncate">
+                  {userData?.name}
+                </p>
+                <p
+                  className={`text-xs truncate ${
+                    isDarkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  {userData?.email || "user@weblix.com"}
+                </p>
+              </div>
+            </div>
+
+            {/* Credits */}
+            <div
+              className={`px-4 py-3 flex justify-between items-center border-b ${
+                isDarkMode ? "border-white/10" : "border-black/10"
+              }`}
+            >
+              <div className="flex items-center gap-2 text-sm">
+                <BsCoin className="text-yellow-400" />
+                Credits
+              </div>
+              <span className="text-yellow-400 font-bold text-sm">
+                {userData.credits}
+              </span>
+            </div>
+
+            {/* Menu items */}
+            <Link
+              to="/dashboard"
+              onClick={() => setProfileOpen(false)}
+              className={`block w-full px-4 py-3 text-sm ${
+                isDarkMode
+                  ? "hover:bg-white/10 text-gray-200"
+                  : "hover:bg-black/5 text-gray-800"
+              }`}
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/contact"
+              onClick={() => setProfileOpen(false)}
+              className={`block w-full px-4 py-3 text-sm ${
+                isDarkMode
+                  ? "hover:bg-white/10 text-gray-200"
+                  : "hover:bg-black/5 text-gray-800"
+              }`}
+            >
+              Contact Us
+            </Link>
+            <Link
+              to="/about"
+              onClick={() => setProfileOpen(false)}
+              className={`block w-full px-4 py-3 text-sm ${
+                isDarkMode
+                  ? "hover:bg-white/10 text-gray-200"
+                  : "hover:bg-black/5 text-gray-800"
+              }`}
+            >
+              About
+            </Link>
+
+            <div
+              className={`border-t ${
+                isDarkMode ? "border-white/10" : "border-black/10"
+              }`}
+            />
+
+            <button
+              onClick={Logout}
+              className="w-full px-4 py-3 text-sm text-left text-red-400 hover:bg-red-500/10"
+            >
+              Logout
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* ✅ MOBILE MENU — full nav (profile already alag handle ho raha) */}
       {menuOpen && (
         <div
-          className={`fixed top-16 left-0 w-full z-[60] md:hidden px-5 py-5 shadow-xl ${
+          className={`fixed top-16 left-0 w-full z-[60] md:hidden px-5 py-5 shadow-xl overflow-y-auto ${
             isDarkMode
               ? "bg-black border-b border-white/10"
               : "bg-white border-b border-black/10"
           }`}
+          style={{ maxHeight: "calc(100vh - 4rem)" }}
         >
           <Link
             to="/pricing"
@@ -278,39 +450,6 @@ export default function Header({ isDarkMode, setIsDarkMode, onLoginClick }) {
             </button>
           ) : (
             <div className="space-y-3 mt-3">
-              <div
-                className={`flex items-center gap-3 p-3 rounded-lg border ${
-                  isDarkMode
-                    ? "bg-white/5 border-white/10"
-                    : "bg-black/5 border-black/10"
-                }`}
-              >
-                {userData?.avatar && !avatarError3 ? (
-                  <img
-                    src={userData.avatar}
-                    alt="avatar"
-                    className="w-10 h-10 rounded-full object-cover"
-                    onError={() => setAvatarError3(true)}
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-base font-bold">
-                    {userData?.name?.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold truncate">
-                    {userData?.name}
-                  </p>
-                  <p
-                    className={`text-xs truncate ${
-                      isDarkMode ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
-                    {userData?.email || "user@weblix.com"}
-                  </p>
-                </div>
-              </div>
-
               <div className="flex justify-between px-1">
                 <span>Credits</span>
                 <span className="text-yellow-400">{userData.credits}</span>
