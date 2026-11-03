@@ -28,7 +28,7 @@ export default function PaymentSuccess() {
           return;
         }
 
-        // Confirm payment and add credits
+        
         const response = await axios.get(
           `${ServerUrl}/api/billing/confirm-payment`,
           { 

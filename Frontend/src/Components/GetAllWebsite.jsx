@@ -86,11 +86,7 @@ export default function GetAllWebsite({
     }
   };
 
-  const handleRefresh = () => {
-    setRefreshing(true);
-    fetchAllWebsites();
-  };
-
+  
   const handlePreviewWebsite = (id) => {
     navigate(`/code/${id}`);
   };
@@ -241,7 +237,7 @@ export default function GetAllWebsite({
     }
   };
 
-  // REMOVED: handleDeleteWebsite function completely
+ 
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

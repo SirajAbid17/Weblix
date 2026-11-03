@@ -86,7 +86,7 @@ export default function Dashboard() {
     navigate("/generate");
   };
 
-  // Updated stat cards - ONLY 2 CARDS NOW
+ 
   const statCards = [
     {
       title: "Total Websites",
