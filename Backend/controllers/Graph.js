@@ -57,8 +57,7 @@ export const GetDashboardStats = async (req, res) => {
     const totalWebsites = websites.length;
     const activeDeployments = websites.filter((w) => w.deploy === true).length;
 
-    // REMOVED: totalVisits, loadTime, performanceScore calculations
-
+  
     const typeDistribution = {
       Portfolio: 0,
       "E-commerce": 0,
@@ -109,7 +108,6 @@ export const GetDashboardStats = async (req, res) => {
       stats: {
         totalWebsites,
         activeDeployments,
-        // REMOVED: totalVisits, averageLoadTime, performanceScore
       },
       charts: {
         websiteDistribution: pieChartData,
@@ -126,7 +124,6 @@ export const GetDashboardStats = async (req, res) => {
   }
 };
 
-// REMOVED: TrackWebsiteVisit function (no longer needed)
 
 export const GetWebsiteAnalytics = async (req, res) => {
   try {
@@ -142,7 +139,6 @@ export const GetWebsiteAnalytics = async (req, res) => {
     return res.status(200).json({
       success: true,
       analytics: {
-        // REMOVED: visits, loadTime, performanceScore
         createdAt: website.createdAt,
         lastModified: website.updatedAt,
         isDeployed: website.deploy,

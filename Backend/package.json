@@ -5,7 +5,8 @@
   "description": "Weblix AI is an intelligent platform that transforms user prompts into fully functional, deployable websites using modern web technologies.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+   "dev": "nodemon --ignore public/ --ignore node_modules/ index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Siraj_Abid",
